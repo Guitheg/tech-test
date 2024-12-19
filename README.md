@@ -1,42 +1,32 @@
-# Rust Template [![Github Actions][gha-badge]][gha] [![License: MIT][license-badge]][license]
+# Gobin Tech Interview
 
-[gha]: https://github.com/PaulRBerg/rust-template/actions
-[gha-badge]: https://github.com/PaulRBerg/rust-template/actions/workflows/ci.yml/badge.svg
-[license]: https://opensource.org/licenses/MIT
-[license-badge]: https://img.shields.io/badge/License-MIT-blue.svg
+## Comments (en Français)
+Alors a propos des requirements:
+ 1. je suis pas satisfait de ce que j'ai fais. Il faudrait que j'améliorer la partie aync
+ 2. j'ai pas la partie signature, et la partie process, je suis pas vraiment satisfait de ce que j'ai fais, faudrait faire plus de vérification, être un peu plus abstrait parfois (comme pour laisser interagir avec une base de données)
+ 3. Api Restful ne fonctionne pas, je renvois juste un string sans construire la réponse http adéquate. Et en plus, j'ai pas fait health.
+ 4. la documentation est pauvre car je manquais de temps et je prévilégié le reste
 
-A template for developing Rust projects, with sensible defaults.
+ Optionel: j'aurais voulu le faire mais manque de temps
 
-## Getting Started
+Le point positif c'est que je n'ai pas été largué. Je comprenais ce qu'on me demandait, et je savais plus ou moins comment faire.
+Le point négatif c'est que j'ai du apprendre beaucoup de truc, je connaissais pas du tout les libs, j'ai du partir de zéro sur tout à chaque fois.
+J'ai perdu du temps car j'ai commencé à partir sur ethereum test net pour le blockchain listener puis je me suis rendu compte que l'event OpPoked était pas très actif, donc j'ai préféré prendre SubmittedSpotEntry sur starknet. ça m'a fait perdre beaucoup de temps mais au moins j'ai bien appris et vu comment faire.
 
-Click the [`Use this template`](https://github.com/PaulRBerg/rust-template/generate) button at the top of the page to
-create a new repository with this repo as the initial state.
+Je suis plutôt déçu dans l'ensemble, mais je suis content car c'était plutôt productif en terme d'apprentissage, on apprends toujours mieux quand il y a des tâches données.
 
-## Features
 
-### Sensible Defaults
+## Launch
 
-This template comes with sensible default configurations in the following files:
+Make sure you have set your `INFURA_API_KEY` env variable
 
-```text
-├── .editorconfig
-├── .gitignore
-├── .prettierrc.yml
-├── Cargo.toml
-└── rustfmt.toml
+Launch the server with a 'REST' Api
+```
+sh launch.sh
 ```
 
-### GitHub Actions
+On another terminal, to get the data from the api:
 
-This template comes with GitHub Actions pre-configured. Your code will be linted and tested on every push and pull
-request made to the `main` branch.
-
-You can edit the CI script in [.github/workflows/ci.yml](./.github/workflows/ci.yml).
-
-## Usage
-
-See [The Rust Book](https://doc.rust-lang.org/book/) and [The Cargo Book](https://doc.rust-lang.org/cargo/index.html).
-
-## License
-
-This project is licensed under MIT.
+```
+python script/get_data.py
+```
