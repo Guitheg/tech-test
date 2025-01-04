@@ -6,6 +6,37 @@ use twap::twap_process_forever;
 
 pub(crate) mod twap;
 pub(crate) mod event_listener;
+pub(crate) mod restapi;
+
+pub(crate) trait AppState: Send + Sync {
+    fn get_last_value(&self) -> Option<u128>;
+}
+
+pub(crate) struct AppStateMock {
+    value: Option<u128>
+}
+impl AppStateMock {
+    fn new(value: Option<u128>) -> Self {
+        Self { value }
+    }
+}
+impl AppState for AppStateMock {
+    fn get_last_value(&self) -> Option<u128> {
+        self.value
+    }
+}
+
+pub(crate) struct AppStateImpl {
+    storage: Arc<TwapStorage>
+}
+impl AppState for AppStateImpl {
+    fn get_last_value(&self) -> Option<u128> {
+        self.storage.get().ok()
+    }
+}
+
+
+
 
 async fn get_data(State(twap_storage): State<Arc<Mutex<TwapStorage>>>) -> String {
     let twap = twap_storage.lock().unwrap();
