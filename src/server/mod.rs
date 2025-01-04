@@ -5,6 +5,7 @@ use twap::TwapStorage;
 use twap::twap_process_forever;
 
 pub(crate) mod twap;
+pub(crate) mod event_listener;
 
 async fn get_data(State(twap_storage): State<Arc<Mutex<TwapStorage>>>) -> String {
     let twap = twap_storage.lock().unwrap();
