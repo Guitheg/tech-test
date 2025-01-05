@@ -1,20 +1,41 @@
 # Tech test
 
-## Comments (en Français)
-Alors a propos des requirements:
- 1. je suis pas satisfait de ce que j'ai fais. Il faudrait que j'améliorer la partie aync
- 2. j'ai pas la partie signature, et la partie process, je suis pas vraiment satisfait de ce que j'ai fais, faudrait faire plus de vérification, être un peu plus abstrait parfois (comme pour laisser interagir avec une base de données)
- 3. Api Restful ne fonctionne pas, je renvois juste un string sans construire la réponse http adéquate. Et en plus, j'ai pas fait health.
- 4. la documentation est pauvre car je manquais de temps et je prévilégié le reste
+## ⚠️ Ceci est une mise à jour ⚠️
 
- Optionel: j'aurais voulu le faire mais manque de temps
+L'original est : [b67a0803282870c99acbe166c16f87d547057cbf](https://github.com/Guitheg/tech-test/tree/b67a0803282870c99acbe166c16f87d547057cbf)
 
-Le point positif c'est que je n'ai pas été largué. Je comprenais ce qu'on me demandait, et je savais plus ou moins comment faire.
-Le point négatif c'est que j'ai du apprendre beaucoup de truc, je connaissais pas du tout les libs, j'ai du partir de zéro sur tout à chaque fois.
-J'ai perdu du temps car j'ai commencé à partir sur ethereum test net pour le blockchain listener puis je me suis rendu compte que l'event OpPoked était pas très actif, donc j'ai préféré prendre SubmittedSpotEntry sur starknet. ça m'a fait perdre beaucoup de temps mais au moins j'ai bien appris et vu comment faire.
+## Blockchain interaction
 
-Je suis plutôt déçu dans l'ensemble, mais je suis content car c'était plutôt productif en terme d'apprentissage, on apprends toujours mieux quand il y a des tâches données.
+Dans cette partie, j'écoute les events de SubmittedSpotEntry avec l'addresse du contrat associé sur Sepolia.
 
+- Dans un premier temps je récupère un certains nombre d'events (depuis les 20 derniers blocks),
+
+- Dans un deuxième temps j'attends les nouveaux.
+
+Ma fonction qui écoute les events renvois directement un receiver, ce qui pourra dans le future me permettre de traiter les events.
+
+Je n'ai pas réussi à filtrer les events directement à partir du pair id puisqu'il me semble que l'info n'est que dans data, donc j'ai du le faire à la main.
+
+Je suis plutôt satisfait de ce que j'ai fais sur cette partie.
+
+## Data processing
+
+1. Ce que j'ai fais c'est que je me sers de la valeur calculé précédemment pour calculer la nouvelle valeur. En gros, je normalise les "temps" par rapport à la période, et je calcul la moyenne en pondérant les valeurs par rapport à leur temps normalisé. Si, la nouvelle valeur appartient à une autre periode (l'heure suivante), je repars de zéro et ainsi de suite.
+
+2. Je n'ai encore fait la partie signature
+
+Pour le TWAP je suis plutôt satisfait.
+
+## API Development
+
+En ayant séparé chaque traitement dans un thread à part et en gérant bien son AppState j'ai eu beaucoup plus de facilité à réaliser cette partie.
+
+La signature n'ayant pas été faite, il n'y a pas cette feature.
+
+
+##
+
+Dans l'ensemble, je trouve qu'il y a eu une bonne amélioration. Surtout avec l'apport des tests automatiques.
 
 ## Launch
 
@@ -30,3 +51,20 @@ On another terminal, to get the data from the api:
 ```
 python script/get_data.py
 ```
+
+##
+
+Quelques images illustrant le fonctionnement de l'app
+
+Démarrage du serveur
+![](images/server_1_on_start.png)
+
+Requête depuis le navigateur 
+![](images/request_rest_api.png)
+
+
+Côté serveur
+![](images/server_2_request_response.png)
+
+Les tests automatiques
+![](images/tests.png)
