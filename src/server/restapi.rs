@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use axum::routing::IntoMakeService;
 use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::get, Json, Router};
 use serde_json::{json, Value};
 
@@ -16,7 +15,9 @@ pub(crate) async fn create_restapi(state: Arc<dyn AppState>) -> Router {
 
 
 pub async fn handler_data(State(state): State<Arc<dyn AppState>>) -> Json<Value> {
-    Json(json!({ "data": state.get_last_value() }))
+    let last_value = state.get_last_value();
+    println!("📃 Requesting data... Sending {:?}...", last_value);
+    Json(json!({ "data": last_value }))
 }
 
 async fn handler_404() -> impl IntoResponse {
@@ -32,7 +33,6 @@ mod tests {
     use std::sync::Arc;
 
     use alloy::transports::http::reqwest::Body;
-    use futures_util::{StreamExt, TryStreamExt};
     use rstest::rstest;
 
     use axum::http::Request;

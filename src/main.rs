@@ -29,5 +29,13 @@ async fn main() {
     let rpc_url = "https://starknet-sepolia.infura.io/v3";
     let contract_addr = "0x036031daa264c24520b11d93af622c848b2499b66b41d611bac95e13cfca131a";
 
-    server_run_forever(&args.tcp_addr, &args.port, &args.id, rpc_url, &args.api_key, contract_addr).await
+    server_run_forever(
+        args.tcp_addr.to_string(),
+        args.port.to_string(),
+        args.id.to_string(),
+        rpc_url.to_string(),
+        args.api_key.to_string(),
+        contract_addr.to_string(),
+        true
+    ).await
 }
