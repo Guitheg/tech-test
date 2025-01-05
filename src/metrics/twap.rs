@@ -21,17 +21,17 @@ fn weighted_sum(previous_value: u128, current_value: u128, previous_weight: f32,
     }
 }
 
-struct TwapInput {
-    timestamp: u64,
-    price: u128
+pub (crate) struct TwapInput {
+    pub (crate) timestamp: u64,
+    pub (crate) price: u128
 }
 
-struct TwapValue {
-    timestamp: u64,
-    value: u128
+pub(crate) struct TwapValue {
+    pub (crate) timestamp: u64,
+    pub (crate) value: u128
 }
 
-struct TwapMetric {
+pub(crate) struct TwapMetric {
     period: u64,
     current_value: u128,
     last_timestamp: u64
@@ -49,10 +49,15 @@ impl TwapMetric {
 
 impl Metric<TwapValue, TwapInput> for TwapMetric {
     fn update(&mut self, new_value: TwapInput) -> Result<Option<TwapValue>, String> {
+        
         let previous_value = self.current_value;
         let current_value = new_value.price;
         let previous_timestamp = self.last_timestamp;
         let current_timestamp = new_value.timestamp;
+
+        if previous_timestamp == 0 && current_timestamp == 0 {
+            return Ok(None);
+        }
 
         let previous_hour = previous_timestamp.div_euclid(self.period) * self.period;
         let current_hour = current_timestamp.div_euclid(self.period) * self.period;
@@ -77,7 +82,7 @@ impl Metric<TwapValue, TwapInput> for TwapMetric {
             }
 
             std::cmp::Ordering::Greater => {
-                Err(format!("previous_hour({}) > current_hour({})", previous_hour, current_hour))
+                Err(format!("previous_hour({}, {}) > current_hour({}, {})", previous_hour, previous_timestamp, current_hour, current_timestamp))
             }
         }
     }
