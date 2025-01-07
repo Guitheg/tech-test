@@ -6,7 +6,7 @@ description = "A template for developing Rust projects, with sensible defaults"
 edition = "2021"
 homepage = "https://github.com/PaulRBerg/rust-template"
 license = "MIT"
-name = "gobin-tech-interview"
+name = "twaplast"
 version = "0.1.0"
 
 [dependencies]
@@ -25,6 +25,12 @@ axum = { version = "0.7.9", features = ["macros", "multipart", "tokio"] }
 tower = { version = "0.4", features = ["full"] }
 axum-macros = "0.3"
 reqwest = { version = "0.11", features = ["blocking"] }
+secp256k1 = { version = "0.30.0", features = [
+    "global-context",
+    "hashes",
+    "rand",
+    "serde",
+] }
 
 [dev-dependencies]
 rstest = "0.23.0"

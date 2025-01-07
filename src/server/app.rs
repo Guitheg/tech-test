@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 use crate::events::listener::receive_event;
 use crate::server::restapi::create_restapi;
@@ -7,23 +8,38 @@ use self::transaction::Transaction;
 
 use crate::metrics::storage::HashMapStorage;
 
+use super::signing::generate_keys;
+
 
 pub(crate) trait AppState: Send + Sync {
+    fn identifier(&self) -> &secp256k1::PublicKey;
+    fn passkey(&self) -> &secp256k1::SecretKey;
     fn get_last_value(&self) -> Option<u128>;
     fn update(&self, transaction: Transaction);
 }
 
 pub(crate) struct AppStateMock {
-    value: Mutex<Option<u128>>
+    value: Mutex<Option<u128>>,
+    pub(crate) secret_key: secp256k1::SecretKey,
+    pub(crate) public_key: secp256k1::PublicKey
 }
 impl AppStateMock {
     pub(crate) fn new(value: Option<u128>) -> Self {
+        let (secret_key, public_key) = generate_keys();
         Self {
-            value: Mutex::new(value)
+            value: Mutex::new(value),
+            public_key,
+            secret_key
         }
     }
 }
 impl AppState for AppStateMock {
+    fn identifier(&self) -> &secp256k1::PublicKey {
+        &self.public_key
+    }
+    fn passkey(&self) -> &secp256k1::SecretKey {
+        &self.secret_key
+    }
     fn get_last_value(&self) -> Option<u128> {
         let value = self.value.lock().unwrap();
         *value
@@ -35,16 +51,28 @@ impl AppState for AppStateMock {
 }
 
 pub(crate) struct AppStateImpl {
-    storage: Arc<HashMapStorage>
+    storage: Arc<HashMapStorage>,
+    pub(crate) secret_key: secp256k1::SecretKey,
+    pub(crate) public_key: secp256k1::PublicKey
 }
 impl AppStateImpl {
     fn new() -> Self {
+        let (secret_key, public_key) = generate_keys();
         Self {
-            storage: Arc::new(HashMapStorage::new())
+            storage: Arc::new(HashMapStorage::new()),
+            secret_key,
+            public_key
         }
     }
 }
 impl AppState for AppStateImpl {
+    fn identifier(&self) -> &secp256k1::PublicKey {
+        &self.public_key
+    }
+    fn passkey(&self) -> &secp256k1::SecretKey {
+        &self.secret_key
+    }
+
     fn get_last_value(&self) -> Option<u128> {
         self.storage.last()
     }

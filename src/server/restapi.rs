@@ -1,9 +1,12 @@
 use std::sync::Arc;
 
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::get, Json, Router};
 use serde_json::{json, Value};
 
 use crate::server::app::AppState;
+use crate::server::signing::get_signature;
 
 pub(crate) async fn create_restapi(state: Arc<dyn AppState>) -> Router {
     Router::new()
@@ -13,11 +16,33 @@ pub(crate) async fn create_restapi(state: Arc<dyn AppState>) -> Router {
         .with_state(state)
 }
 
+fn cat_u8_16_n_u8_8_to_u8_24(u_16: [u8; 16], u_8: [u8 ;8]) -> [u8; 24] {
+    let mut res = [0u8; 24];
+    res[..16].copy_from_slice(&u_16);
+    res[16..].copy_from_slice(&u_8);
+    res
+}
 
 pub async fn handler_data(State(state): State<Arc<dyn AppState>>) -> Json<Value> {
+    let now = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
     let last_value = state.get_last_value();
-    println!("📃 Requesting data... Sending {:?}...", last_value);
-    Json(json!({ "data": last_value }))
+    let value_as_bytes = if let Some(value) = last_value {
+        value.to_ne_bytes()
+    } else {
+        [0u8; 16]
+    };
+    let full_message = cat_u8_16_n_u8_8_to_u8_24(value_as_bytes, now.to_ne_bytes());
+    let signature = get_signature(&full_message, state.passkey());
+    println!("📃 Requesting data... Sending {:?} ({now}) [{signature}]", last_value);
+
+    let json_data = json!({
+        "data": last_value,
+        "now": now,
+        "signature": signature,
+        "identifier": state.identifier()
+    });
+    
+    Json(json_data)
 }
 
 async fn handler_404() -> impl IntoResponse {

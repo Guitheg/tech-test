@@ -22,7 +22,7 @@ Je suis plutôt satisfait de ce que j'ai fais sur cette partie.
 
 1. Ce que j'ai fais c'est que je me sers de la valeur calculé précédemment pour calculer la nouvelle valeur. En gros, je normalise les "temps" par rapport à la période, et je calcul la moyenne en pondérant les valeurs par rapport à leur temps normalisé. Si, la nouvelle valeur appartient à une autre periode (l'heure suivante), je repars de zéro et ainsi de suite.
 
-2. Je n'ai encore fait la partie signature
+2. J'ai signé les valeurs que l'on envoit mais plutôt du côté du REST api.
 
 Pour le TWAP je suis plutôt satisfait.
 
@@ -30,7 +30,7 @@ Pour le TWAP je suis plutôt satisfait.
 
 En ayant séparé chaque traitement dans un thread à part et en gérant bien son AppState j'ai eu beaucoup plus de facilité à réaliser cette partie.
 
-La signature n'ayant pas été faite, il n'y a pas cette feature.
+Dans les valeurs renvoyé, il y a la signature, le moment où cela a été signé, et la clé public permettant l'utilisateur de checker.
 
 
 ##
