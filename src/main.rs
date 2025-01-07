@@ -1,9 +1,9 @@
 
-mod common;
+mod events;
 mod metrics;
 mod server;
 
-use server::server_run_forever;
+use server::app::server_run_forever;
 use clap::Parser;
 
 #[derive(Parser, Debug)]

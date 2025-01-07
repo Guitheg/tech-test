@@ -1,4 +1,4 @@
-use crate::common::spot_entry::SpotEntry;
+use crate::events::spot_entry::SpotEntry;
 
 use std::fmt;
 

@@ -3,7 +3,7 @@ use std::sync::Arc;
 use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::get, Json, Router};
 use serde_json::{json, Value};
 
-use super::AppState;
+use crate::server::app::AppState;
 
 pub(crate) async fn create_restapi(state: Arc<dyn AppState>) -> Router {
     Router::new()
@@ -37,7 +37,7 @@ mod tests {
 
     use axum::http::Request;
     use serde_json::Value;
-    use crate::server::{restapi::create_restapi, AppStateMock};
+    use crate::server::{restapi::create_restapi, app::AppStateMock};
     use tower::util::ServiceExt;
     use axum::http::StatusCode;
 

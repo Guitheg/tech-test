@@ -1,7 +1,7 @@
-use crate::common::transaction::Transaction;
+use crate::events::transaction::Transaction;
 use starknet::{core::types::{BlockId, EventFilter, Felt}, providers::{jsonrpc::HttpTransport, JsonRpcClient, Provider, Url}};
 use tokio::sync::mpsc::{self, Receiver, Sender};
-use crate::common::spot_entry::{felt_to_u128, felt_to_utf8_str, SpotEntry};
+use crate::events::spot_entry::{felt_to_u128, felt_to_utf8_str, SpotEntry};
 
 const EVENT_HASH: &str = "0x280bb2099800026f90c334a3a23888ffe718a2920ffbbf4f44c6d3d5efb613c";
 
